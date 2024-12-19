@@ -1,0 +1,10 @@
+--13-12-24 created organization table by shahzaib
+organizationCREATE TABLE `organization` (
+  `OrganizationId` int NOT NULL AUTO_INCREMENT,
+  `Title` varchar(255) DEFAULT NULL,
+  `OrganizationCode` varchar(100) DEFAULT NULL,
+  `PrimaryDocumentCenterURL` varchar(255) DEFAULT NULL,
+  `SecondaryDocumentCenterURL` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`OrganizationId`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+

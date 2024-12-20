@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const cors = require('cors');
 
 const app = express();
@@ -132,6 +132,6 @@ app.get('/search', (req, res) => {
 });
 
 
-app.listen(3000, () => {
+app.listen(3001, () => {
     console.log("Listening..");
 });

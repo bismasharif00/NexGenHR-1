@@ -3,12 +3,11 @@ const mysql = require('mysql2');
 const cors = require('cors');
 
 const app = express();
-app.use(express.json()); //display data in json format
+app.use(express.json()); 
 
-//Middleware
 app.use(cors());
 
-//Creating connection with MYSQL
+
 const db = mysql.createConnection({
     host: "localhost",
     user: 'root',
@@ -16,7 +15,6 @@ const db = mysql.createConnection({
     database: 'mydatabase'
 });
 
-// Connect to the database
 db.connect(err => {
     if (err) {
         console.error('Error connecting to the database:', err);
@@ -29,10 +27,10 @@ db.connect(err => {
 app.get('/', (req,res) => {
     const sql = "SELECT * FROM employee";
     db.query(sql, (err, data) => {
-        if(err) return res.json(err); //if condition(err) is true, so give err in response
-        return res.json(data); //else give data in response
+        if(err) return res.json(err); 
+        return res.json(data); 
     })
-}); //API to get data from database
+}); 
 
 app.post('/add-employee', (req, res) => {
     const sql = "INSERT INTO employee(`first_name`, `last_name`, `em_email`, `em_address`, `em_status`, `em_gender`, `em_phone`, `em_birthday`, `em_salary`) VALUES (?)";
@@ -51,7 +49,7 @@ app.post('/add-employee', (req, res) => {
         if(err) return res.json(err);
         return res.json(data);
     })
-}); //API to submit data into the database
+}); 
 
 app.put('/update/:id', (req, res) => {
     const sql = "UPDATE employee set `first_name` = ?, `last_name` = ?, `em_email` = ?, `em_address` = ?, `em_status` = ?, `em_gender` = ?, `em_phone` = ?, `em_birthday` = ?, `em_salary` = ? WHERE employee_id = ?";
@@ -72,7 +70,7 @@ app.put('/update/:id', (req, res) => {
         if(err) return res.json(err);
         return res.json(data);
     })
-}); //API to update data into the database
+}); 
 
 app.delete('/employee/:id', (req, res) => {
     const sql = "DELETE from employee WHERE employee_id = ?";
@@ -90,8 +88,8 @@ app.get('/show/:id', (req,res) => {
     const id = req.params.id;
 
     db.query(sql, [id], (err, data) => {
-        if(err) return res.json(err); //if condition(err) is true, so give err in response
-        return res.json(data); //else give data in response
+        if(err) return res.json(err); 
+        return res.json(data); 
     })
 }); //API to get data from database
 

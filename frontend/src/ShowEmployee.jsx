@@ -14,7 +14,7 @@ export default function ShowEmployee() {
     const [formData, setFormData] = useState({}); // State to store the updated form data
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/show/${id}`)
+        axios.get(`http://localhost:3001/show/${id}`)
             .then(res => {
                 setShowEmployee(res.data);
                 setFormData(res.data[0]); // Initialize form data with fetched employee details

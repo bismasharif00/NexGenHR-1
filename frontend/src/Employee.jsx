@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from 'react'
-import axios from 'axios'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+import DataTable from 'react-data-table-component'; // Importing React Data Table Component
 import './Employee.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faTrashCan, faMoneyCheckDollar } from '@fortawesome/free-solid-svg-icons';
 
 function Employee() {
-    const [employee, setEmployee] = useState([])
+    const [employee, setEmployee] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
@@ -30,7 +31,7 @@ function Employee() {
 
         try {
             const response = await axios.get(`http://localhost:3001/search`, {
-                params: { q: searchTerm }
+                params: { q: searchTerm },
             });
             setEmployee(response.data);
         } catch (error) {
@@ -40,34 +41,76 @@ function Employee() {
 
     const handleDelete = async (id) => {
         try {
-            const res = await axios.delete(`http://localhost:3001/employee/${id}`)
+            await axios.delete(`http://localhost:3001/employee/${id}`);
             fetchEmployees();
-        }catch(err) {
-            console.log(err)
+        } catch (err) {
+            console.log(err);
         }
-    }
+    };
 
-
+    // Define columns for the DataTable
+    const columns = [
+        {
+            name: 'ID',
+            selector: (row) => row.employee_id,
+            sortable: true,
+        },
+        {
+            name: 'First Name',
+            selector: (row) => row.first_name,
+            sortable: true,
+        },
+        {
+            name: 'Last Name',
+            selector: (row) => row.last_name,
+            sortable: true,
+        },
+        {
+            name: 'Email',
+            selector: (row) => row.em_email,
+            sortable: true,
+        },
+        {
+            name: 'Actions',
+            cell: (row) => (
+                <div className="d-inline-flex gap-2">
+                    <Link to={`show/${row.employee_id}`} className="btn btn-outline-dark">
+                        <FontAwesomeIcon icon={faEye} />
+                    </Link>
+                    <Link to={`invoice/${row.employee_id}`} className="btn btn-outline-dark">
+                        <FontAwesomeIcon icon={faMoneyCheckDollar} />
+                    </Link>
+                    <button
+                        className="btn btn-danger"
+                        onClick={() => handleDelete(row.employee_id)}
+                    >
+                        <FontAwesomeIcon icon={faTrashCan} />
+                    </button>
+                </div>
+            ),
+        },
+    ];
 
     return (
-        <div className='employee-container1'>
-
-            <div className='employee-container2'>
-                <div className='leftNav'>
-                    <Link to="/" className='leftNavBtn'>Home</Link>
-                    <Link className='leftNavBtn'>CV screening</Link>
-                    <Link className='leftNavBtn'>Job posting</Link>
-                    
+        <div className="employee-container1">
+            <div className="employee-container2">
+                <div className="leftNav">
+                    <Link to="/" className="leftNavBtn">
+                        Home
+                    </Link>
+                    <Link className="leftNavBtn">CV Screening</Link>
+                    <Link className="leftNavBtn">Job Posting</Link>
                 </div>
             </div>
 
-
-            <div className='employee-container3'>
-                <div className='data'>
-                    <div className='custom'>
-                        <Link to="/add-employee" className='custom-btn custom-btn-success'>Add +</Link>
-                        <div class="custom-input-group">
-                        <input
+            <div className="employee-container3">
+                <div className="data">
+                    <div className="custom">
+                        <Link to="/add-employee" className="custom-btn custom-btn-success">
+                            Add +
+                        </Link>
+                        <div className="custom-input-group">
+                            <input
                                 type="text"
                                 className="search"
                                 placeholder="Search"
@@ -84,47 +127,21 @@ function Employee() {
                             </button>
                         </div>
                     </div>
-                    <table className='custom-table'>
-                        <thead>
-                            <tr>
-                                <td>ID</td>
-                                <td>First Name</td>
-                                <td>Last Name</td>
-                                <td>Email</td>
-                                <td>{'          '}</td>
-                                {/* <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td> */}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {employee.map((data, i)=>(
-                                <tr key={i}>
-                                    <td>{data.employee_id}</td>
-                                    <td>{data.first_name}</td> {/*name should be same as it was written in database like Name with capital N */}
-                                    <td>{data.last_name}</td>
-                                    <td>{data.em_email}</td>
-                                    <td>
-                                        <div className='d-inline-flex gap-2'>
-                                            <Link to={`show/${data.employee_id}`} className='btn btn-outline-dark'><FontAwesomeIcon icon={faEye} /></Link>
-                                            <Link to={`invoice/${data.employee_id}`} className='btn btn-outline-dark'><FontAwesomeIcon icon={faMoneyCheckDollar}/></Link>
-                                            <button className='btn btn-danger' onClick={() => handleDelete(data.employee_id)}><FontAwesomeIcon icon={faTrashCan}/></button>
-                                        </div>
-                                    </td>
 
-                                </tr> 
-                            ))}
-                        </tbody>
-                    </table>
+                    <DataTable
+                        columns={columns}
+                        data={employee}
+                        pagination // Enables pagination
+                        paginationPerPage={5} // Number of rows per page
+                        paginationRowsPerPageOptions={[5, 10, 15]} // Dropdown options for rows per page
+                        highlightOnHover // Adds a hover effect to rows
+                        striped // Adds striped row styling
+                        responsive // Makes the table responsive
+                    />
                 </div>
             </div>
-
-
         </div>
-    )
+    );
 }
 
-export default Employee
+export default Employee;

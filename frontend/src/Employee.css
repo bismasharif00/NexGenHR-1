@@ -245,3 +245,12 @@ overflow: hidden;
 .bgTable{
     background-color: rgb(39, 43, 47) !important;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    margin: 20px 0;
+    padding: 0;
+}
+

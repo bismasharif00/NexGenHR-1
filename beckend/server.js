@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-const port = 3000;
+
 
 const app = express();
 app.use(express.json()); 
@@ -134,6 +134,6 @@ app.get('/search', (req, res) => {
 });
 
 
-app.listen(process.env.PORT, () => {
+app.listen(3001, () => {
     console.log("Listening..");
 });

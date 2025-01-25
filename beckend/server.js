@@ -2,6 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
 
 
 const app = express();
@@ -27,6 +30,48 @@ db.connect(err => {
     console.log('Connected to the MySQL database');
 });
 
+/////////////////////////////////////////////////////////
+
+const JWT_SECRET = 'your_jwt_secret_key_here'; 
+
+app.post('/login', (req, res) => {
+    const { username, password, role } = req.body;
+  
+    // Check if all fields are provided
+    if (!username || !password || !role) {
+      return res.status(400).json({ message: 'All fields are required.' });
+    }
+  
+    // Query the database for the user
+    const query = 'SELECT * FROM users WHERE username = ? AND role = ?';
+    db.query(query, [username, role], async (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: 'Database query error.' });
+      }
+      if (results.length === 0) {
+        return res.status(401).json({ message: 'Invalid username or role.' });
+      }
+  
+      const user = results[0];
+  
+      // Compare passwords
+      const isPasswordMatch = await bcrypt.compare(password, user.password);
+      if (!isPasswordMatch) {
+        return res.status(401).json({ message: 'Invalid password.' });
+      }
+  
+      // Generate JWT
+      const token = jwt.sign({ username: user.username, role: user.role }, JWT_SECRET, {
+        expiresIn: '1h',
+      });
+  
+      res.json({ message: 'Login successful.', token });
+    });
+  });
+  
+
+
+//////////////////////////////////////////////////////////////////////////////////////
 
 app.get('/', (req,res) => {
     const sql = "SELECT * FROM employee";
